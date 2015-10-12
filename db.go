@@ -6,7 +6,7 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 )
 
-func GetNodesFromDb() Nodes {
+func GetAllNodesFromDb() Nodes {
 
 	db, err := sql.Open("sqlite3", "./inv.db")
 	if err != nil {
@@ -21,6 +21,37 @@ func GetNodesFromDb() Nodes {
 	if err != nil {
 		panic(err)
 	}
+
+	var nodes Nodes
+	//fmt.Println(rows[0])
+	for rows.Next() {
+		var node Node
+		err = rows.Scan(&node.Id, &node.Type, &node.Name, &node.StoragePath, &node.InternalIP)
+//		fmt.Println(node)
+		nodes = append(nodes, node)
+	}
+	db.Close()
+
+	return nodes
+
+}
+
+func QueryTypeFromDb(typeFilter string) Nodes {
+
+	db, err := sql.Open("sqlite3", "./inv.db")
+	if err != nil {
+		panic(err)
+	}
+
+	if err := db.Ping(); err != nil {
+		fmt.Println("Failed to keep connection alive")
+	}
+
+	rows, err := db.Query("select * from hosts where type=?", typeFilter)
+	if err != nil {
+		panic(err)
+	}
+
 	var nodes Nodes
 	//fmt.Println(rows[0])
 	for rows.Next() {
