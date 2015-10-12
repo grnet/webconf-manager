@@ -52,13 +52,17 @@ func Create(w http.ResponseWriter, r *http.Request) {
 			}
 			return
 		}
-		if len(node.IP) == 0 {
-			w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-			w.WriteHeader(http.StatusBadRequest)
-			if err := json.NewEncoder(w).Encode(jsonError{Code: http.StatusBadRequest, Message: "IP not provided in json"}); err != nil {
-				panic(err)
+		if node.Type != "bigbluebutton" {
+			if node.Type != "transcoding" {
+				if node.Type != "testing" {
+					w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+					w.WriteHeader(http.StatusBadRequest)
+					if err := json.NewEncoder(w).Encode(jsonError{Code: http.StatusBadRequest, Message: "Type value not supported. Select one of {bigbluebutton, transcoding}"}); err != nil {
+						panic(err)
+					}
+					return
+				}
 			}
-			return
 		}
 		if node.StoragePath == 0 {
 			w.Header().Set("Content-Type", "application/json; charset=UTF-8")

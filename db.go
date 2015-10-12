@@ -25,7 +25,7 @@ func GetNodesFromDb() Nodes {
 	//fmt.Println(rows[0])
 	for rows.Next() {
 		var node Node
-		err = rows.Scan(&node.Id, &node.Type, &node.Name, &node.StoragePath, &node.IP, &node.InternalIP)
+		err = rows.Scan(&node.Id, &node.Type, &node.Name, &node.StoragePath, &node.InternalIP)
 //		fmt.Println(node)
 		nodes = append(nodes, node)
 	}
@@ -46,12 +46,12 @@ func AddNodeToDb(node Node) Node {
 		fmt.Println("Failed to keep connection alive")
 	}
 
-	stmt, err := db.Prepare("insert into hosts (type, hostname, pair_id, public_ip, internal_ip) values (?,?,?,?,?)")
+	stmt, err := db.Prepare("insert into hosts (type, hostname, pair_id, internal_ip) values (?,?,?,?)")
 	if err != nil {
 		panic(err)
 	}
 	
-	res , err := stmt.Exec(node.Type, node.Name, node.StoragePath, node.IP, node.InternalIP)
+	res , err := stmt.Exec(node.Type, node.Name, node.StoragePath, node.InternalIP)
 	if err != nil {
 		panic(err)
 	}

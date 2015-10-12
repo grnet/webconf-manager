@@ -4,7 +4,6 @@ type Node struct {
 	Id          int64  `json:"id"`
 	Name        string `json:"name"`
 	Type        string `json:"type"`
-	IP          string `json:"ip"`
 	StoragePath int    `json:"storage_path"`
 	InternalIP  string `json:"internal_ip"`
 }
