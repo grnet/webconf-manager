@@ -1,4 +1,4 @@
-inventory_handler
+inventory
 inv.db*
 inv.py
-*.conf
+*.config
