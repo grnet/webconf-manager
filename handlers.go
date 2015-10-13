@@ -113,9 +113,12 @@ func LeastLoad(w http.ResponseWriter, r *http.Request) {
 	}
 
 	client := &http.Client{}
-	url := "http://83.212.170.52/icingaweb2/monitoring/list/services?modifyFilter=1&service=load&format=json"
+	url := "http://" + cfg.MonHost.IP + "/icingaweb2/monitoring/list/services?modifyFilter=1&service=load&format=json"
 	//resp, err := client.Get(url)
 	req, _ := http.NewRequest("GET", url, nil)
+	fmt.Println(cfg.MonHost.Password)
+	req.SetBasicAuth(cfg.MonHost.Username, cfg.MonHost.Password)
+
 	resp, _ := client.Do(req)
 
 	defer resp.Body.Close()

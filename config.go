@@ -8,18 +8,31 @@ import (
 var flConfig = flag.String("conf", "", "specify configuration file")
 var flServerIP = flag.String("ip", "", "ip address the server will bind to")
 var flServerPort = flag.Int("port", 0, "specify the port to listen on")
+var flMonHostIP = flag.String("monhostip", "", "ip address of monitoring host to query")
+var flMonHostUsername = flag.String("monhostuser", "", "username to query monitoring host interface")
+var flMonHostPassword = flag.String("monhostpass", "", "password to query monitoring host interface")
 
 type Config struct {
 	Server struct {
 		Bindip string
 		Port   int
 	}
+	MonHost struct {
+		IP       string
+		Username string
+		Password string
+	}
 }
 
 const defaultConfig = `
-    [server]
-    bindip = ""
-    port = 8081
+[server]
+bindip = ""
+port = 8081
+
+[monhost]
+ip = 83.212.170.52
+username = webadmin
+password = password
 `
 
 func LoadConfiguration() Config {
@@ -30,16 +43,28 @@ func LoadConfiguration() Config {
 	if *flConfig != "" {
 		err := gcfg.ReadFileInto(&cfg, *flConfig)
 		if err != nil {
-			panic (err)
+			panic(err)
 		}
 	} else {
-		_ = gcfg.ReadStringInto(&cfg, defaultConfig)
+		err := gcfg.ReadStringInto(&cfg, defaultConfig)
+		if err != nil {
+			panic(err)
+		}
 	}
 	if *flServerIP != "" {
 		cfg.Server.Bindip = *flServerIP
 	}
 	if *flServerPort != 0 {
 		cfg.Server.Port = *flServerPort
+	}
+	if *flMonHostIP != "" {
+		cfg.MonHost.IP = *flMonHostIP
+	}
+	if *flMonHostUsername != "" {
+		cfg.MonHost.Username = *flMonHostUsername
+	}
+	if *flMonHostPassword != "" {
+		cfg.MonHost.Password = *flMonHostPassword
 	}
 
 	return cfg
