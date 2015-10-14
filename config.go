@@ -8,6 +8,7 @@ import (
 var flConfig = flag.String("conf", "", "specify configuration file")
 var flServerIP = flag.String("ip", "", "ip address the server will bind to")
 var flServerPort = flag.Int("port", 0, "specify the port to listen on")
+var flSqlPath = flag.String("dbpath", "", "specify full path to local sqlite db")
 var flMonHostIP = flag.String("monhostip", "", "ip address of monitoring host to query")
 var flMonHostUsername = flag.String("monhostuser", "", "username to query monitoring host interface")
 var flMonHostPassword = flag.String("monhostpass", "", "password to query monitoring host interface")
@@ -16,6 +17,9 @@ type Config struct {
 	Server struct {
 		Bindip string
 		Port   int
+	}
+	Sql struct {
+		Path string
 	}
 	MonHost struct {
 		IP       string
@@ -28,6 +32,9 @@ const defaultConfig = `
 [server]
 bindip = ""
 port = 8081
+
+[sql]
+path = "/var/lib/webconf/inventory.db"
 
 [monhost]
 ip = 83.212.170.52
@@ -59,6 +66,9 @@ func LoadConfiguration() Config {
 	}
 	if *flMonHostIP != "" {
 		cfg.MonHost.IP = *flMonHostIP
+	}
+	if *flSqlPath != "" {
+		cfg.Sql.Path = *flSqlPath
 	}
 	if *flMonHostUsername != "" {
 		cfg.MonHost.Username = *flMonHostUsername

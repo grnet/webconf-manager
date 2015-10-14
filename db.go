@@ -8,7 +8,7 @@ import (
 
 func GetAllNodesFromDb() Nodes {
 
-	db, err := sql.Open("sqlite3", "./inv.db")
+	db, err := sql.Open("sqlite3", cfg.Sql.Path )
 	if err != nil {
 		panic(err)
 	}
@@ -38,7 +38,7 @@ func GetAllNodesFromDb() Nodes {
 
 func QueryTypeFromDb(typeFilter string) Nodes {
 
-	db, err := sql.Open("sqlite3", "./inv.db")
+	db, err := sql.Open("sqlite3", cfg.Sql.Path )
 	if err != nil {
 		panic(err)
 	}
@@ -68,7 +68,7 @@ func QueryTypeFromDb(typeFilter string) Nodes {
 
 func AddNodeToDb(node Node) Node {
 
-	db, err := sql.Open("sqlite3", "./inv.db")
+	db, err := sql.Open("sqlite3", cfg.Sql.Path )
 	if err != nil {
 		panic(err)
 	}
