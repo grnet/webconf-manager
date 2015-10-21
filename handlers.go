@@ -42,7 +42,7 @@ func Create(w http.ResponseWriter, r *http.Request) {
 		if len(node.Name) == 0 {
 			w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 			w.WriteHeader(http.StatusBadRequest)
-			if err := json.NewEncoder(w).Encode(jsonError{Code: http.StatusBadRequest, Message: "Name not provided in json"}); err != nil {
+			if err := json.NewEncoder(w).Encode(jsonResponse{Code: http.StatusBadRequest, Message: "Name not provided in json"}); err != nil {
 				panic(err)
 			}
 			return
@@ -50,7 +50,7 @@ func Create(w http.ResponseWriter, r *http.Request) {
 		if len(node.Type) == 0 {
 			w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 			w.WriteHeader(http.StatusBadRequest)
-			if err := json.NewEncoder(w).Encode(jsonError{Code: http.StatusBadRequest, Message: "Type not provided in json"}); err != nil {
+			if err := json.NewEncoder(w).Encode(jsonResponse{Code: http.StatusBadRequest, Message: "Type not provided in json"}); err != nil {
 				panic(err)
 			}
 			return
@@ -60,7 +60,7 @@ func Create(w http.ResponseWriter, r *http.Request) {
 				if node.Type != "testing" {
 					w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 					w.WriteHeader(http.StatusBadRequest)
-					if err := json.NewEncoder(w).Encode(jsonError{Code: http.StatusBadRequest, Message: "Type value not supported. Select one of {bigbluebutton, transcoding}"}); err != nil {
+					if err := json.NewEncoder(w).Encode(jsonResponse{Code: http.StatusBadRequest, Message: "Type value not supported. Select one of {bigbluebutton, transcoding}"}); err != nil {
 						panic(err)
 					}
 					return
@@ -70,7 +70,7 @@ func Create(w http.ResponseWriter, r *http.Request) {
 		if node.StoragePath == 0 {
 			w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 			w.WriteHeader(http.StatusBadRequest)
-			if err := json.NewEncoder(w).Encode(jsonError{Code: http.StatusBadRequest, Message: "Pair id not provided in json or provided but equal is to zero"}); err != nil {
+			if err := json.NewEncoder(w).Encode(jsonResponse{Code: http.StatusBadRequest, Message: "Pair id not provided in json or provided but is equal to zero"}); err != nil {
 				panic(err)
 			}
 			return
@@ -78,7 +78,7 @@ func Create(w http.ResponseWriter, r *http.Request) {
 		if len(node.InternalIP) == 0 {
 			w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 			w.WriteHeader(http.StatusBadRequest)
-			if err := json.NewEncoder(w).Encode(jsonError{Code: http.StatusBadRequest, Message: "internal_ip not provided in json"}); err != nil {
+			if err := json.NewEncoder(w).Encode(jsonResponse{Code: http.StatusBadRequest, Message: "internal_ip not provided in json"}); err != nil {
 				panic(err)
 			}
 			return
@@ -106,7 +106,7 @@ func LeastLoad(w http.ResponseWriter, r *http.Request) {
 	if len(nodes) == 0 {
 		w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 		w.WriteHeader(http.StatusNotFound)
-		if err := json.NewEncoder(w).Encode(jsonError{Code: http.StatusNotFound, Message: "No nodes with given type found"}); err != nil {
+		if err := json.NewEncoder(w).Encode(jsonResponse{Code: http.StatusNotFound, Message: "No nodes with given type found"}); err != nil {
 			panic(err)
 		}
 		return
@@ -116,7 +116,7 @@ func LeastLoad(w http.ResponseWriter, r *http.Request) {
 	url := "http://" + cfg.MonHost.IP + "/icingaweb2/monitoring/list/services?modifyFilter=1&service=load&format=json"
 	//resp, err := client.Get(url)
 	req, _ := http.NewRequest("GET", url, nil)
-	fmt.Println(cfg.MonHost.Password)
+
 	req.SetBasicAuth(cfg.MonHost.Username, cfg.MonHost.Password)
 
 	resp, _ := client.Do(req)
@@ -153,7 +153,7 @@ func LeastLoad(w http.ResponseWriter, r *http.Request) {
 				load1 := strings.Split(loads1[1], ";")
 				//load5 := strings.Split(loads5[1], ";")
 				//load15 := strings.Split(loads15[1], ";")
-				out.Load1 , _ = strconv.ParseFloat(load1[0], 64)
+				out.Load1, _ = strconv.ParseFloat(load1[0], 64)
 				//out.Load5 , _ = strconv.ParseFloat(load5[0], 64)
 				//out.Load15 , _ = strconv.ParseFloat(load15[0], 64)
 				validOuts = append(validOuts, out)

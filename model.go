@@ -10,7 +10,7 @@ type Node struct {
 
 type Nodes []Node
 
-type jsonError struct {
+type jsonResponse struct {
 	Code    int    `json:"code"`
 	Message string `json:"message"`
 }
