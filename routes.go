@@ -12,13 +12,8 @@ type Route struct {
 type Routes []Route
 
 var routes = Routes{
-	Route{"Index" ,"GET" ,"/",Index },
-	Route{"Create","POST","/",Create},
-	Route{"LeastLoad", "GET", "/nextnode/{group}", LeastLoad },
-//	Route{
-//		"RemoveNode",
-//		"DELETE",
-//		"/nodes",
-//		RemoveNode,
-//	},
+	Route{"Index"    , "GET"  , "/list"            , Index     },
+	Route{"Create"   , "POST" , "/add"             , Create    },
+	Route{"LeastLoad", "GET"  , "/nextnode/{group}", LeastLoad },
+	Route{"Deploy"   , "POST" , "/deploy"          , Deploy    },
 }

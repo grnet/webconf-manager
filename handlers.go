@@ -3,12 +3,15 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/gorilla/mux"
 	"io"
 	"io/ioutil"
 	"net/http"
 	"strconv"
 	"strings"
+
+	"github.com/bsphere/celery"
+	"github.com/gorilla/mux"
+	"github.com/streadway/amqp"
 )
 
 func Index(w http.ResponseWriter, r *http.Request) {
@@ -178,5 +181,38 @@ func LeastLoad(w http.ResponseWriter, r *http.Request) {
 	}
 
 	return
+
+}
+
+func Deploy(w http.ResponseWriter, r *http.Request) {
+
+	conn, err := amqp.Dial("amqp://localhost://")
+	if err != nil {
+		panic(err)
+	}
+
+	defer conn.Close()
+
+	ch, err := conn.Channel()
+	if err != nil {
+		panic(err)
+	}
+
+	var args []string
+	args = append(args, "deploy.yml")
+
+	task, err := celery.NewTask("tasks.run_playbook", args, nil)
+	if err != nil {
+		panic(err)
+	}
+
+	err = task.Publish(ch, "", "celery")
+
+	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+	w.WriteHeader(http.StatusAccepted)
+	if err := json.NewEncoder(w).Encode(jsonResponse{Code: http.StatusAccepted, Message: "Request to deploy via Ansible has been accepted"}); err != nil {
+		panic(err)
+	}
+
 
 }
