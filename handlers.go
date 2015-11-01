@@ -1,6 +1,7 @@
 package main
 
 import (
+	"crypto/tls"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -115,9 +116,11 @@ func LeastLoad(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	client := &http.Client{}
-	url := "http://" + cfg.MonHost.IP + "/icingaweb2/monitoring/list/services?modifyFilter=1&service=load&format=json"
-	//resp, err := client.Get(url)
+	tr := &http.Transport{
+		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+	}
+	client := &http.Client{Transport: tr}
+	url := cfg.MonHost.Method + "://" + cfg.MonHost.IP + "/icingaweb2/monitoring/list/services?modifyFilter=1&service=load&format=json"
 	req, _ := http.NewRequest("GET", url, nil)
 
 	req.SetBasicAuth(cfg.MonHost.Username, cfg.MonHost.Password)
@@ -135,15 +138,6 @@ func LeastLoad(w http.ResponseWriter, r *http.Request) {
 		panic(err)
 	}
 
-	//if len(outs) == 0 {
-	//	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-	//	w.WriteHeader(http.StatusNotFound)
-	//	if err := json.NewEncoder(w).Encode(jsonError{Code: http.StatusNotFound, Message: "No nodes with given type found"}); err != nil {
-	//		panic(err)
-	//	}
-	//	return
-	//}
-
 	var validOuts icingaOuts
 
 	for _, out := range AllOuts {
@@ -151,14 +145,14 @@ func LeastLoad(w http.ResponseWriter, r *http.Request) {
 			if node.Name == out.HostName {
 				tokenized := strings.Split(out.ServicePerfdata, " ")
 				loads1 := strings.Split(tokenized[0], "=")
-				//loads5 := strings.Split(tokenized[1], "=")
-				//loads15 := strings.Split(tokenized[2], "=")
+				loads5 := strings.Split(tokenized[1], "=")
+				loads15 := strings.Split(tokenized[2], "=")
 				load1 := strings.Split(loads1[1], ";")
-				//load5 := strings.Split(loads5[1], ";")
-				//load15 := strings.Split(loads15[1], ";")
+				load5 := strings.Split(loads5[1], ";")
+				load15 := strings.Split(loads15[1], ";")
 				out.Load1, _ = strconv.ParseFloat(load1[0], 64)
-				//out.Load5 , _ = strconv.ParseFloat(load5[0], 64)
-				//out.Load15 , _ = strconv.ParseFloat(load15[0], 64)
+				out.Load5, _ = strconv.ParseFloat(load5[0], 64)
+				out.Load15, _ = strconv.ParseFloat(load15[0], 64)
 				validOuts = append(validOuts, out)
 			}
 		}
@@ -213,6 +207,5 @@ func Deploy(w http.ResponseWriter, r *http.Request) {
 	if err := json.NewEncoder(w).Encode(jsonResponse{Code: http.StatusAccepted, Message: "Request to deploy via Ansible has been accepted"}); err != nil {
 		panic(err)
 	}
-
 
 }
