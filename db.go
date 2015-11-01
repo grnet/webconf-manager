@@ -23,11 +23,9 @@ func GetAllNodesFromDb() Nodes {
 	}
 
 	var nodes Nodes
-	//fmt.Println(rows[0])
 	for rows.Next() {
 		var node Node
 		err = rows.Scan(&node.Id, &node.Type, &node.Name, &node.StoragePath, &node.InternalIP)
-//		fmt.Println(node)
 		nodes = append(nodes, node)
 	}
 	db.Close()
@@ -53,11 +51,9 @@ func QueryTypeFromDb(typeFilter string) Nodes {
 	}
 
 	var nodes Nodes
-	//fmt.Println(rows[0])
 	for rows.Next() {
 		var node Node
 		err = rows.Scan(&node.Id, &node.Type, &node.Name, &node.StoragePath, &node.InternalIP)
-//		fmt.Println(node)
 		nodes = append(nodes, node)
 	}
 	db.Close()
