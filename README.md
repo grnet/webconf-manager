@@ -1,7 +1,7 @@
 
-# inventory
+# webconf-manager
 
-`inventory` has been written as a small utility addressing specific needs for GRNET's teleconferencing service. It is a fairly lightweight API that can be used to add BigBlueButton and Transcoding types of hosts into Ansible's dynamic inventory and to deploy upon them the necessary Ansible roles. 
+`webconf-manager` has been written as a small utility addressing specific needs for GRNET's teleconferencing service. It is a fairly lightweight API that can be used to add BigBlueButton and Transcoding types of hosts into Ansible's dynamic inventory and to deploy upon them the necessary Ansible roles. 
 
 In general three methods are implemented:
 
